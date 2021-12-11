@@ -12,7 +12,7 @@ const AllUsers = () => {
             .then(result => setAllUsers(result.data));
     }, [user])
     return (
-        <Box sx={{ height: '90%' }} className=' overflow-hidden rounded-3xl '>
+        <Box sx={{ height: '90%' }} className='border   overflow-hidden rounded-3xl '>
             <div className="h-1/5 bg-white">
                 <LeftBar></LeftBar>
                 <div className=" w-100 pb-2 px-4 ">
@@ -26,12 +26,6 @@ const AllUsers = () => {
                 {
                     allUsers.filter(client => user.email !== client.email).map(client => <UserCard key={client.email} data={client}></UserCard>)
                 }
-
-                <UserCard data={{ displayName: 'dfdfdf', email: 'dfdf', photoURL: 'dfdfdf' }}></UserCard>
-                <UserCard data={{ displayName: 'dfdfdf', email: 'dfdf', photoURL: 'dfdfdf' }}></UserCard>
-                <UserCard data={{ displayName: 'dfdfdf', email: 'dfdf', photoURL: 'dfdfdf' }}></UserCard>
-                <UserCard data={{ displayName: 'dfdfdf', email: 'dfdf', photoURL: 'dfdfdf' }}></UserCard>
-                <UserCard data={{ displayName: 'dfdfdf', email: 'dfdf', photoURL: 'dfdfdf' }}></UserCard>
             </div>
 
 
