@@ -30,6 +30,7 @@ const LeftBar = () => {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
+    console.log(user);
 
     return (
         <AppBar sx={{ boxShadow: 'none' }} color='transparent' position="static">

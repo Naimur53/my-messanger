@@ -9,7 +9,6 @@ import axios from 'axios'
 import { CircularProgress, LinearProgress, Stack } from '@mui/material';
 import { Box } from '@mui/system';
 
-
 const ChatRoom = ({ socket }) => {
     AOS.init();
     const [incoming, setIncoming] = useState([]);
@@ -19,8 +18,6 @@ const ChatRoom = ({ socket }) => {
     const { user } = useAuth();
     const { register, handleSubmit, formState: { errors } } = useForm();
     const { email } = useParams();
-
-
     //email of client 
     console.log('change up email', email);
     useEffect(() => {
@@ -39,36 +36,23 @@ const ChatRoom = ({ socket }) => {
     // get the room 
 
     useEffect(() => {
-        async function get() {
-
-            // console.log('email', client?.data?.email, !isLoading); 
-
+        //join a room
+        async function join() {
+            // console.log('email', client?.data?.email, !isLoading);  
             if (!isLoading && email !== undefined && email === client?.data?.email) {
                 const rooms = parseInt(user?.metadata?.createdAt) + parseInt(client?.data?.createdAt);
                 console.log('my-room id is ', rooms);
                 setRoom(rooms);
                 await socket.emit('join', rooms);
                 console.log('join room id', rooms);
-                // (rooms);
             }
         }
-        get()
+        join()
     }, [client, user, isLoading, room, email, socket])
 
 
 
     console.log('the rome id is ', room);
-    // useEffect(() => {
-
-    //     console.log('roomid', room, client, user);
-
-    //     room && socket.emit('join_chat', room)
-
-    //     socket.on('message', msg => {
-    //         console.log('its incoming message', msg);
-    //         setIncoming(i => [...i, msg]);
-    //     })
-    // }, [client, email]);
 
     //get message after select user
     useEffect(() => {
@@ -80,49 +64,51 @@ const ChatRoom = ({ socket }) => {
                 setIsLoading(false)
             })
         console.log('bari dise er ');
-
+    }, [room]);
+    useEffect(() => {
+        //handle message come
         socket.on('receive_message', data => {
-            // console.log('the receive message is  ', data);
-            // console.log('client', client);
-            // console.log(client?.data?.email === data.user);
-            // console.log('client email', client?.data?.email, 'user email', data.user);
             console.log('data come your room', room);
-            // if (client?.data?.email === data.user) {
-
-            // axios.get(`http://localhost:5000/chat/${data.room}`)
-            //     .then(res => {
-            //         setIncoming(res.data)
-            //         console.log('res', res);
-            //     })
             setIncoming(i => [...i, data]);
             console.log('if are vitoer');
-
-            // }
         })
-    }, [room])
-    console.log('the client ', client);
-    //handle message came
+    }, [])
     useEffect(() => {
+        socket.emit('leave', room);
+    }, [email])
 
-    }, [socket])
     const onSubmit = async data => {
-        // setRoom(parseInt(user?.metadata?.createdAt) + parseInt(client?.createdAt))
-        // console.log(room);
-        // socket.emit('message', { user: user?.displayName, email: user?.email, client: client.email, room: room, message: data.message })
-        // setDisplay([...display, data.example])
-        // setDisplay(data.example) 
-        console.log(room);
+        //data
+
+
         data.user = user.email;
         data.userName = user.displayName;
         data.userPhoto = user.photoURL
-        data.client = client.email;
-        data.room = room
-        console.log('submit', data.room);
-        axios.post('http://localhost:5000/chat', data)
-        // setIncoming(i => [...i, data]);
+        data.client = client.data.email;
+        data.room = room;
+        data.time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+
+        const mainData = new FormData();
+        for (const key in data) {
+            if (key === 'pic') {
+                mainData.append(key, data[key][0])
+            }
+            else {
+                mainData.append(key, data[key])
+            }
+        }
+        console.log('image', data.pic[0])
+        if (!data.pic[0]) {
+            data.pic = undefined;
+            mainData.append('pic', undefined)
+        }
+
+        // console.log('submit', data.room);
+        axios.post('http://localhost:5000/chat', mainData)
         setIncoming([...incoming, data]);
         await socket.emit('message', data);
     }
+    console.log(incoming);
     if (!client?.data?.displayName) {
         return <div className='col-span-2 h-screen'>
             <ChatBox client={client?.data} incoming={incoming}></ChatBox>
@@ -147,7 +133,11 @@ const ChatRoom = ({ socket }) => {
                 <ChatBox client={client?.data} incoming={incoming}></ChatBox>
                 <Box sx={{ flexGrow: '0' }} className='rows-span '>
                     <form className='flex ' onSubmit={handleSubmit(onSubmit)}>
-                        <input className='flex-1 py-1 rounded' placeholder=" write some thing" {...register("message", { required: true })} />
+                        <div>
+                            <label htmlFor="files" className="btn">Select Image</label>
+                            <input id="files" accept='image/*' {...register("pic")} className='hidden' type="file" />
+                        </div>
+                        <input className='flex-1 py-1 rounded bg-transparent' placeholder=" write some thing" {...register("message", { required: true })} />
                         <input className='py-1 px-4 bg-red-700 text-white rounded' type="submit" value='Send' />
                     </form>
                 </Box>

@@ -12,7 +12,7 @@ const AllUsers = () => {
             .then(result => setAllUsers(result.data));
     }, [user])
     return (
-        <Box sx={{ height: '90%' }} className='border   overflow-hidden rounded-3xl '>
+        <Box sx={{ height: '90%' }} className='border overflow-hidden rounded-3xl '>
             <div className="h-1/5 bg-white">
                 <LeftBar></LeftBar>
                 <div className=" w-100 pb-2 px-4 ">

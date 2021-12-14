@@ -7,7 +7,6 @@ import SignUp from './Components/Pages/SignUp/SignUp';
 import PrivateRoute from "./Components/Pages/PrivateRoute/PrivateRoute";
 import io from 'socket.io-client'
 import ChatRoom from "./Components/Pages/ChatRoom/ChatRoom";
-import { useEffect } from "react";
 import "tailwindcss/tailwind.css"
 
 const socket = io.connect('http://localhost:5000');
