@@ -10,9 +10,9 @@ const ChatBox = (props) => {
     const incoming = props.incoming;
     const client = props.client;
     return (
-        <Box sx={{ height: ' ', flexGrow: '1' }}>
+        <Box className='mb-5 w-full' sx={{ height: ' ', flexGrow: '1' }}>
             <RightBar info={{ name: client?.displayName, photo: client?.photoURL }}></RightBar>
-            <div style={{ height: '85%' }} className=' overflow-hidden'>
+            <div style={{ height: '95%' }} className=' overflow-hidden'>
                 <ReactScrollableFeed>
                     {
                         incoming?.map(ims => <Message key={ims._id} message={ims} client={client} user={user}></Message>)

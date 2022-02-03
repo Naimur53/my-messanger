@@ -8,6 +8,8 @@ import { useParams } from 'react-router';
 import axios from 'axios'
 import { CircularProgress, LinearProgress, Stack } from '@mui/material';
 import { Box } from '@mui/system';
+import ImageIcon from '@mui/icons-material/Image';
+import SendIcon from '@mui/icons-material/Send';
 
 const ChatRoom = ({ socket }) => {
     AOS.init();
@@ -16,19 +18,20 @@ const ChatRoom = ({ socket }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [room, setRoom] = useState(null);
     const { user } = useAuth();
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const { register, watch, handleSubmit, formState: { errors } } = useForm();
     const { email } = useParams();
     //email of client 
     console.log('change up email', email);
     useEffect(() => {
         setIsLoading(true);
+        setIncoming([]);
         console.log('user params', email);
         setClient({});
-        axios.get(`http://localhost:5000/users/${email}`)
+        axios.get(`https://nameless-cliffs-74237.herokuapp.com/users/${email}`)
             .then(async result => {
                 console.log('data came');
                 await setClient(result)
-                setIsLoading(false);
+                setIsLoading(false)
             })
 
     }, [email])
@@ -50,20 +53,20 @@ const ChatRoom = ({ socket }) => {
         join()
     }, [client, user, isLoading, room, email, socket])
 
-
-
-    console.log('the rome id is ', room);
-
     //get message after select user
+
+    console.log(user,);
     useEffect(() => {
-        setIncoming([]);
         setIsLoading(true);
-        axios.get(`http://localhost:5000/chat/${room}`)
-            .then(res => {
-                setIncoming(res.data)
-                setIsLoading(false)
-            })
-        console.log('bari dise er ');
+        console.log(room);
+        if (room) {
+            axios.get(`https://nameless-cliffs-74237.herokuapp.com/chat/${room}`)
+                .then(res => {
+                    setIncoming(res.data)
+                    setIsLoading(false)
+                })
+                .catch(error => { console.log(error); })
+        }
     }, [room]);
     useEffect(() => {
         //handle message come
@@ -78,9 +81,7 @@ const ChatRoom = ({ socket }) => {
     }, [email])
 
     const onSubmit = async data => {
-        //data
-
-
+        //data 
         data.user = user.email;
         data.userName = user.displayName;
         data.userPhoto = user.photoURL
@@ -104,15 +105,20 @@ const ChatRoom = ({ socket }) => {
         }
 
         // console.log('submit', data.room);
-        axios.post('http://localhost:5000/chat', mainData)
+        axios.post('https://nameless-cliffs-74237.herokuapp.com/chat', mainData)
         setIncoming([...incoming, data]);
         await socket.emit('message', data);
     }
     console.log(incoming);
-    if (!client?.data?.displayName) {
+    if (!isLoading && !client?.data?.displayName) {
         return <div className='col-span-2 h-screen'>
             <ChatBox client={client?.data} incoming={incoming}></ChatBox>
-            Select user to chat
+            <div className='h-full flex justify-center items-center'>
+                <div className='text-center'>
+                    <h2 className='text-lg'>User not found</h2>
+                    <p>Please Select a exist user</p>
+                </div>
+            </div>
         </div>
     }
     if (isLoading) {
@@ -128,17 +134,22 @@ const ChatRoom = ({ socket }) => {
         </>
     }
     return (
-        <div className='col-span-2  h-screen px-2'>
-            <div style={{ height: '90%' }} className='  flex flex-col justify-between'>
+        <div className='col-span-2 h-screen px-2'>
+            <div className='h-full flex flex-col  '>
                 <ChatBox client={client?.data} incoming={incoming}></ChatBox>
-                <Box sx={{ flexGrow: '0' }} className='rows-span '>
-                    <form className='flex ' onSubmit={handleSubmit(onSubmit)}>
-                        <div>
-                            <label htmlFor="files" className="btn">Select Image</label>
+                <Box sx={{ flexGrow: '0' }} className='rows-span mt-10 flex '>
+                    <form className='flex items-center  w-full mb-5' onSubmit={handleSubmit(onSubmit)}>
+                        <div className='relative'>
+                            <label htmlFor="files" className="btn bg-white p-2 rounded-full inline-flex justify-center"><ImageIcon  ></ImageIcon></label>
                             <input id="files" accept='image/*' {...register("pic")} className='hidden' type="file" />
+                            {
+                                watch('pic')?.length ? <span className='text-red-800 absolute top-0 right-0 font-semibold'>1</span> : ''
+                            }
                         </div>
-                        <input className='flex-1 py-1 rounded bg-transparent' placeholder=" write some thing" {...register("message", { required: true })} />
-                        <input className='py-1 px-4 bg-red-700 text-white rounded' type="submit" value='Send' />
+                        <input className='flex-1 bg-white rounded-lg pl-2 py-1 mx-2 md:mx-4' placeholder=" write some thing" {...register("message", { required: watch('pic')?.length ? false : true })} />
+                        <div>
+                            <button className='bg-white rounded-full p-2 inline-flex justify-center' type='submit'><SendIcon></SendIcon></button>
+                        </div>
                     </form>
                 </Box>
             </div>

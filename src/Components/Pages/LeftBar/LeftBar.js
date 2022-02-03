@@ -7,10 +7,9 @@ import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
-import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import useAuth from '../../Shared/hooks/useAuth';
-
+import { NavLink } from 'react-router-dom';
 
 const LeftBar = () => {
 
@@ -46,11 +45,11 @@ const LeftBar = () => {
                     </Typography>
 
                     <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Open settings">
+                        <div title="Open settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                                 <Avatar alt="Remy Sharp" src={user.photoURL} />
                             </IconButton>
-                        </Tooltip>
+                        </div>
                         <Menu
                             sx={{ mt: '45px' }}
                             id="menu-appbar"
@@ -67,6 +66,9 @@ const LeftBar = () => {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}
                         >
+                            <MenuItem sx={{ display: { sm: 'block', md: 'none' } }} onClick={handleCloseNavMenu}>
+                                <Typography component={NavLink} to='/profile' textAlign="center">Profile</Typography>
+                            </MenuItem>
                             <MenuItem onClick={handleCloseNavMenu}>
                                 <Typography onClick={handleSignOut} textAlign="center">Logout</Typography>
                             </MenuItem>

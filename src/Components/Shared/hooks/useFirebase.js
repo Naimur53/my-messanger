@@ -7,13 +7,14 @@ initializeAppAuthentication();
 
 const useFirebase = () => {
     const [user, setUser] = useState({});
+
     const [updateCart, setUpdateCart] = useState(0);
     const [loading, setLoading] = useState(true);
     const auth = getAuth();
     const googleProvider = new GoogleAuthProvider();
 
     const saveUser = (user, method) => {
-        fetch('http://localhost:5000/users', {
+        fetch('https://nameless-cliffs-74237.herokuapp.com/users', {
             method: method,
             headers: {
                 'content-type': 'application/json'
@@ -73,6 +74,25 @@ const useFirebase = () => {
                 console.log(error.message);
             })
     };
+    const userImgUpdate = (photoURL) => {
+        updateProfile(auth.currentUser, {
+            photoURL
+        }).then((data) => {
+            // Profile updated!
+            // setUser(user);
+            // ...
+            // await handleSignOut();
+            // await logInWithEmail({ email, password });
+            // console.log(user);
+            // saveUser(user, "POST");
+            console.log('update success', user);
+            saveUser(user, "PUT");
+        }).catch((error) => {
+            // An error occurred
+            console.log(error);
+        }
+        )
+    }
     const logInWithEmail = info => {
         const { email, password } = info;
         signInWithEmailAndPassword(auth, email, password)
@@ -115,7 +135,8 @@ const useFirebase = () => {
         logInWithEmail,
         updateCart,
         setUpdateCart,
-        loading
+        loading,
+        userImgUpdate
     };
 };
 

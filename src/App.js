@@ -8,9 +8,11 @@ import PrivateRoute from "./Components/Pages/PrivateRoute/PrivateRoute";
 import io from 'socket.io-client'
 import ChatRoom from "./Components/Pages/ChatRoom/ChatRoom";
 import "tailwindcss/tailwind.css"
+import AllUsers from './Components/Pages/AllUsers/AllUsers';
+import AboutMe from './Components/AboutMe/AboutMe';
+
 
 const socket = io.connect('http://localhost:5000');
-
 function App() {
   return (
     <AuthProvider>
@@ -20,6 +22,8 @@ function App() {
             <Route path='/' element={<ChatRoom socket={socket}></ChatRoom>}></Route>
             <Route path='/:email' element={<ChatRoom socket={socket}></ChatRoom>}></Route>
           </Route>
+          <Route path='/profile' element={<PrivateRoute><AboutMe phone></AboutMe></PrivateRoute>}></Route>
+          <Route path='/user' element={<AllUsers phone></AllUsers>}></Route>
           <Route path='/login' element={<Login></Login>}></Route>
           <Route path='/signup' element={<SignUp></SignUp>}></Route>
         </Routes>

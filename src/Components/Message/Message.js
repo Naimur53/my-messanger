@@ -6,9 +6,9 @@ const Message = ({ message, user, client }) => {
     message.pic && console.log(message);
     return (
         <div className={user.email === message.user ? "text-right " : 'text-left'}>
-            <div className={`shadow rounded-2xl bg-white inline-block  my-3   ${user.email === message.user ? 'mr-10' : 'ml-10'}`}>
+            <div className={`shadow rounded-2xl bg-white inline-block  my-3   ${user.email === message.user ? 'mr-5 md:mr-10' : 'ml-5 md:ml-10'}`}>
                 <div className="flex flex-col">
-                    <span className='break-words max-w-lg text-left p-2 px-3'>
+                    <span className='break-all max-w-lg text-left p-2 px-3'>
 
                         {
 

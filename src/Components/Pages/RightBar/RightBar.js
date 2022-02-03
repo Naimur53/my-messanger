@@ -10,6 +10,8 @@ import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import useAuth from '../../Shared/hooks/useAuth';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { NavLink } from 'react-router-dom';
 
 
 const RightBar = props => {
@@ -33,7 +35,10 @@ const RightBar = props => {
                     </Box>
 
                     <Box className='' sx={{ flexGrow: 0 }}>
-                        <i className="fas fa-ellipsis-h rounded-full text-pink-400 p-1"></i>
+                        <i className="fas hidden md:block  fa-ellipsis-h rounded-full text-pink-400 p-1"></i>
+                        <IconButton sx={{ display: { sm: 'block', md: 'none' } }} component={NavLink} to='/user'>
+                            <ArrowForwardIcon></ArrowForwardIcon>
+                        </IconButton>
                     </Box>
                 </Toolbar>
             </Container>
