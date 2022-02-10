@@ -10,7 +10,7 @@ const ChatBox = (props) => {
     const incoming = props.incoming;
     const client = props.client;
     return (
-        <Box className='mb-5 w-full' sx={{ height: ' ', flexGrow: '1' }}>
+        <Box className='mb-5 w-full' sx={{ height: '', flexGrow: '1' }}>
             <RightBar info={{ name: client?.displayName, photo: client?.photoURL }}></RightBar>
             <div style={{ height: '95%' }} className=' overflow-hidden'>
                 <ReactScrollableFeed>

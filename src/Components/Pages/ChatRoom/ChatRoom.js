@@ -18,18 +18,15 @@ const ChatRoom = ({ socket }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [room, setRoom] = useState(null);
     const { user } = useAuth();
-    const { register, watch, handleSubmit, formState: { errors } } = useForm();
+    const { register, reset, watch, handleSubmit, formState: { errors } } = useForm();
     const { email } = useParams();
-    //email of client 
-    console.log('change up email', email);
+    //email of client  
     useEffect(() => {
         setIsLoading(true);
         setIncoming([]);
-        console.log('user params', email);
         setClient({});
         axios.get(`https://nameless-cliffs-74237.herokuapp.com/users/${email}`)
             .then(async result => {
-                console.log('data came');
                 await setClient(result)
                 setIsLoading(false)
             })
@@ -44,21 +41,16 @@ const ChatRoom = ({ socket }) => {
             // console.log('email', client?.data?.email, !isLoading);  
             if (!isLoading && email !== undefined && email === client?.data?.email) {
                 const rooms = parseInt(user?.metadata?.createdAt) + parseInt(client?.data?.createdAt);
-                console.log('my-room id is ', rooms);
                 setRoom(rooms);
                 await socket.emit('join', rooms);
-                console.log('join room id', rooms);
             }
         }
         join()
     }, [client, user, isLoading, room, email, socket])
 
-    //get message after select user
-
-    console.log(user,);
+    //get message after select user 
     useEffect(() => {
         setIsLoading(true);
-        console.log(room);
         if (room) {
             axios.get(`https://nameless-cliffs-74237.herokuapp.com/chat/${room}`)
                 .then(res => {
@@ -71,9 +63,7 @@ const ChatRoom = ({ socket }) => {
     useEffect(() => {
         //handle message come
         socket.on('receive_message', data => {
-            console.log('data come your room', room);
             setIncoming(i => [...i, data]);
-            console.log('if are vitoer');
         })
     }, [])
     useEffect(() => {
@@ -98,7 +88,6 @@ const ChatRoom = ({ socket }) => {
                 mainData.append(key, data[key])
             }
         }
-        console.log('image', data.pic[0])
         if (!data.pic[0]) {
             data.pic = undefined;
             mainData.append('pic', undefined)
@@ -108,11 +97,10 @@ const ChatRoom = ({ socket }) => {
         axios.post('https://nameless-cliffs-74237.herokuapp.com/chat', mainData)
         setIncoming([...incoming, data]);
         await socket.emit('message', data);
+        reset()
     }
-    console.log(incoming);
     if (!isLoading && !client?.data?.displayName) {
         return <div className='col-span-2 h-screen'>
-            <ChatBox client={client?.data} incoming={incoming}></ChatBox>
             <div className='h-full flex justify-center items-center'>
                 <div className='text-center'>
                     <h2 className='text-lg'>User not found</h2>
@@ -135,9 +123,9 @@ const ChatRoom = ({ socket }) => {
     }
     return (
         <div className='col-span-2 h-screen px-2'>
-            <div className='h-full flex flex-col  '>
+            <div className='h-full flex flex-col   '>
                 <ChatBox client={client?.data} incoming={incoming}></ChatBox>
-                <Box sx={{ flexGrow: '0' }} className='rows-span mt-10 flex '>
+                <Box sx={{ flexGrow: '0' }} className='rows-span   mt-10 bg-primary  w-full   flex '>
                     <form className='flex items-center  w-full mb-5' onSubmit={handleSubmit(onSubmit)}>
                         <div className='relative'>
                             <label htmlFor="files" className="btn bg-white p-2 rounded-full inline-flex justify-center"><ImageIcon  ></ImageIcon></label>
@@ -146,7 +134,7 @@ const ChatRoom = ({ socket }) => {
                                 watch('pic')?.length ? <span className='text-red-800 absolute top-0 right-0 font-semibold'>1</span> : ''
                             }
                         </div>
-                        <input className='flex-1 bg-white rounded-lg pl-2 py-1 mx-2 md:mx-4' placeholder=" write some thing" {...register("message", { required: watch('pic')?.length ? false : true })} />
+                        <input type='text' className='flex-1 bg-white rounded-lg pl-2 py-1 mx-2 md:mx-4' placeholder=" write some thing" {...register("message", { required: watch('pic')?.length ? false : true })} />
                         <div>
                             <button className='bg-white rounded-full p-2 inline-flex justify-center' type='submit'><SendIcon></SendIcon></button>
                         </div>

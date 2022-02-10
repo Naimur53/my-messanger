@@ -1,11 +1,12 @@
-import { TextField } from '@mui/material';
+import { Button, CircularProgress, TextField } from '@mui/material';
 import React, { useRef } from 'react';
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from 'react-router';
+import { NavLink } from 'react-router-dom';
 import useAuth from '../../Shared/hooks/useAuth';
 
 const SignUp = () => {
-    const { user, signUpWithEmail } = useAuth();
+    const { user, signUpWithEmail, authError, loginLoad } = useAuth();
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
     const password = useRef({});
     password.current = watch("password", "");
@@ -42,6 +43,13 @@ const SignUp = () => {
                         errors.password2 && <div>{errors.password2.message}</div>
                     }
                     <input className='my-3 cursor-pointer transition-all hover:shadow-lg text-lg py-2 font-bold px-6 border-gray-300 text-black border  rounded-full' type="submit" value='Create Account' />
+                    <NavLink to='/login' className='text-center text-primary py-2'>Already have account?</NavLink>
+                    {
+                        authError.length ? <p className='bg-red-600 px-2 mt-2 md:mt-0 py-2 rounded text-white'>{authError}</p> : ''
+                    }
+                    {
+                        loginLoad && <div className='absolute inset-0 flex justify-center items-center'><CircularProgress></CircularProgress></div>
+                    }
                 </form>
             </div>
         </div>

@@ -7,8 +7,8 @@ initializeAppAuthentication();
 
 const useFirebase = () => {
     const [user, setUser] = useState({});
-
-    const [updateCart, setUpdateCart] = useState(0);
+    const [authError, setAuthError] = useState('');
+    const [loginLoad, setLoginLoad] = useState(false);
     const [loading, setLoading] = useState(true);
     const auth = getAuth();
     const googleProvider = new GoogleAuthProvider();
@@ -22,12 +22,11 @@ const useFirebase = () => {
             body: JSON.stringify(user)
         })
             .then(res => res.json())
-            .then(res => console.log(res))
 
     }
 
     const googleSignIn = (location, navigate) => {
-        console.log('hi');
+        setLoginLoad(true);
         signInWithPopup(auth, googleProvider)
             .then(result => {
                 const user = result.user;
@@ -36,17 +35,17 @@ const useFirebase = () => {
                 navigate(location.state?.from.pathname || '/');
             })
             .catch(error => {
-                console.log(error.message);
-            })
+            }).finally(setLoginLoad(false))
     };
 
     const signUpWithEmail = (info) => {
         const { name, email, password, location, navigate } = info;
-        console.log('info', info);
+        setLoginLoad(true)
         createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 // Signed in 
                 const user = userCredential.user;
+                setAuthError('');
                 //save user ot database
                 //update user profile
                 updateProfile(auth.currentUser, {
@@ -56,56 +55,50 @@ const useFirebase = () => {
                     // setUser(user);
                     // ...
                     // await handleSignOut();
-                    // await logInWithEmail({ email, password });
-                    // console.log(user);
-                    // saveUser(user, "POST");
-                    console.log('update success', user);
+                    // await logInWithEmail({ email, password }); 
+                    // saveUser(user, "POST"); 
                     saveUser(user, "POST");
 
 
                 }).catch((error) => {
                     // An error occurred
                     // ...
+                    const errorMessage = error.message;
+                    setAuthError(errorMessage);
                 })
 
                 navigate(location.state?.from.pathname || '/')
                 // ...
             }).catch(error => {
-                console.log(error.message);
-            })
+                const errorMessage = error.message;
+                setAuthError(errorMessage);
+            }).finally(setLoginLoad(false))
     };
     const userImgUpdate = (photoURL) => {
         updateProfile(auth.currentUser, {
             photoURL
         }).then((data) => {
-            // Profile updated!
-            // setUser(user);
-            // ...
-            // await handleSignOut();
-            // await logInWithEmail({ email, password });
-            // console.log(user);
-            // saveUser(user, "POST");
-            console.log('update success', user);
             saveUser(user, "PUT");
         }).catch((error) => {
-            // An error occurred
-            console.log(error);
+            // An error occurred 
         }
         )
     }
     const logInWithEmail = info => {
         const { email, password } = info;
+        setLoginLoad(true);
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 // Signed in 
                 const user = userCredential.user;
                 setUser(user);
+                setAuthError('');
                 // ...
             })
             .catch((error) => {
                 const errorMessage = error.message;
-                console.log(errorMessage);
-            });
+                setAuthError(errorMessage);
+            }).finally(setLoginLoad(false))
     }
     useEffect(() => {
         setLoading(true);
@@ -115,15 +108,14 @@ const useFirebase = () => {
             }
             setLoading(false);
         });
-    }, [auth, updateCart]);
+    }, [auth]);
 
     const handleSignOut = () => {
         signOut(auth).then(() => {
             setUser({});
             // Sign-out successful.
         }).catch((error) => {
-            // An error happened.
-            console.log(error);
+            // An error happened. 
         });
     }
 
@@ -133,10 +125,10 @@ const useFirebase = () => {
         googleSignIn,
         signUpWithEmail,
         logInWithEmail,
-        updateCart,
-        setUpdateCart,
         loading,
-        userImgUpdate
+        userImgUpdate,
+        authError,
+        loginLoad,
     };
 };
 

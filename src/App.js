@@ -19,11 +19,11 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<PrivateRoute><Home></Home></PrivateRoute>}>
-            <Route path='/' element={<ChatRoom socket={socket}></ChatRoom>}></Route>
-            <Route path='/:email' element={<ChatRoom socket={socket}></ChatRoom>}></Route>
+            <Route path='/' element={<PrivateRoute><ChatRoom socket={socket}></ChatRoom></PrivateRoute>}></Route>
+            <Route path='/:email' element={<PrivateRoute><ChatRoom socket={socket}></ChatRoom></PrivateRoute>}></Route>
           </Route>
           <Route path='/profile' element={<PrivateRoute><AboutMe phone></AboutMe></PrivateRoute>}></Route>
-          <Route path='/user' element={<AllUsers phone></AllUsers>}></Route>
+          <Route path='/user' element={<PrivateRoute><AllUsers phone></AllUsers></PrivateRoute>}></Route>
           <Route path='/login' element={<Login></Login>}></Route>
           <Route path='/signup' element={<SignUp></SignUp>}></Route>
         </Routes>

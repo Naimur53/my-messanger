@@ -1,4 +1,4 @@
-import { Button, TextField } from '@mui/material';
+import { Button, CircularProgress, TextField } from '@mui/material';
 import React from 'react';
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from 'react-router';
@@ -6,7 +6,7 @@ import { NavLink } from 'react-router-dom';
 import useAuth from '../../Shared/hooks/useAuth';
 
 const Login = () => {
-    const { user, googleSignIn, logInWithEmail } = useAuth();
+    const { user, googleSignIn, logInWithEmail, loginLoad, authError } = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
@@ -17,6 +17,7 @@ const Login = () => {
         console.log(data);
         logInWithEmail(data);
     }
+    console.log(loginLoad);
     return (
         <div className='h-screen  flex items-center justify-center flex-col '>
             <div className='w-11/12	shadow-md md:w-1/3 md:h-3/5 px-3 py-8 rounded-lg'>
@@ -44,7 +45,14 @@ const Login = () => {
                     Sign in with Google
                 </button>
                 <Button sx={{ px: 3, py: 1.3, color: 'gray', borderRadius: 30, border: '1px solid rgba(0, 0, 0,.3)' }} to='/signUp' component={NavLink} >Dont have Account? </Button>
+                {
+                    authError.length ? <p className='bg-red-600 px-2 mt-2 md:mt-0 py-2 rounded text-white'>{authError}</p> : ''
+                }
+                {
+                    loginLoad && <div className='absolute inset-0 flex justify-center items-center'><CircularProgress></CircularProgress></div>
+                }
             </div>
+
         </div>
     );
 };
