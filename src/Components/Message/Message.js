@@ -12,7 +12,7 @@ const Message = ({ message, user, client }) => {
                         {
 
                             message.pic && <div className='inline-block'>
-                                <img src={`data:image/*;base64,${message.pic}`} alt='img'></img>
+                                <img src={message.pic} alt='img'></img>
                                 <br />
 
                             </div>

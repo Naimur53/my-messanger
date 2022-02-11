@@ -54,7 +54,7 @@ const AllUsers = (props) => {
                     </div>
                 </div>
             </div>
-            <div style={{ height: '78vh', overflowY: 'scroll' }} className='   mt-5 md:mt-0 bg- s-700 overflow-hidden '>
+            <div style={{ height: '78vh', overflowY: 'scroll' }} className='mt-5 md:mt-0 bg- s-700 overflow-hidden '>
                 {
                     loading ? <div className='flex justify-center'><CircularProgress ></CircularProgress></div> : displayUser.length ? displayUser.filter(client => user.email !== client.email).map(client => <UserCard key={client.email} data={client}></UserCard>) : <p className='text-center'>No user found</p>
                 }

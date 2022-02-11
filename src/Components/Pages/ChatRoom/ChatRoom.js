@@ -18,8 +18,9 @@ const ChatRoom = ({ socket }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [room, setRoom] = useState(null);
     const { user } = useAuth();
-    const { register, reset, watch, handleSubmit, formState: { errors } } = useForm();
+    const { register, reset, watch, setValue, handleSubmit, formState: { errors } } = useForm();
     const { email } = useParams();
+    const [imgLoading, setImgLoading] = useState(false);
     //email of client  
     useEffect(() => {
         setIsLoading(true);
@@ -68,9 +69,31 @@ const ChatRoom = ({ socket }) => {
     }, [])
     useEffect(() => {
         socket.emit('leave', room);
-    }, [email])
+    }, [email]);
+    useEffect(() => {
+        const imgFile = watch('picFile');
+        if (imgFile?.length) {
+            let body = new FormData()
+            body.set('key', process.env.REACT_APP_IMAGEBB_API)
+            body.append('image', imgFile[0])
+            setImgLoading(true);
+            axios({
+                method: 'post',
+                url: 'https://api.imgbb.com/1/upload',
+                data: body
+            }).then(res => {
+                console.log(res.data.data.url);
+                setValue('pic', res.data.data.url)
+            }).finally(() => setImgLoading(false))
+        }
+        else {
+        }
+
+    }, [watch('picFile')]);
 
     const onSubmit = async data => {
+        // delete data 
+        delete data.picFile
         //data 
         data.user = user.email;
         data.userName = user.displayName;
@@ -78,23 +101,7 @@ const ChatRoom = ({ socket }) => {
         data.client = client.data.email;
         data.room = room;
         data.time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-
-        const mainData = new FormData();
-        for (const key in data) {
-            if (key === 'pic') {
-                mainData.append(key, data[key][0])
-            }
-            else {
-                mainData.append(key, data[key])
-            }
-        }
-        if (!data.pic[0]) {
-            data.pic = undefined;
-            mainData.append('pic', undefined)
-        }
-
-        // console.log('submit', data.room);
-        axios.post('https://nameless-cliffs-74237.herokuapp.com/chat', mainData)
+        axios.post('https://nameless-cliffs-74237.herokuapp.com/chat', data)
         setIncoming([...incoming, data]);
         await socket.emit('message', data);
         reset()
@@ -129,14 +136,16 @@ const ChatRoom = ({ socket }) => {
                     <form className='flex items-center  w-full mb-5' onSubmit={handleSubmit(onSubmit)}>
                         <div className='relative'>
                             <label htmlFor="files" className="btn bg-white p-2 rounded-full inline-flex justify-center"><ImageIcon  ></ImageIcon></label>
-                            <input id="files" accept='image/*' {...register("pic")} className='hidden' type="file" />
+                            <input id="files" accept='image/*' {...register("picFile")} className='hidden' type="file" />
                             {
-                                watch('pic')?.length ? <span className='text-red-800 absolute top-0 right-0 font-semibold'>1</span> : ''
+                                imgLoading ? <span className=' absolute top-0 right-0 font-semibold'><CircularProgress size={15}></CircularProgress></span> : watch('pic')?.length ? <span className='text-red-800  absolute top-0 right-0 font-semibold'>1</span> : ''
                             }
                         </div>
                         <input type='text' className='flex-1 bg-white rounded-lg pl-2 py-1 mx-2 md:mx-4' placeholder=" write some thing" {...register("message", { required: watch('pic')?.length ? false : true })} />
                         <div>
-                            <button className='bg-white rounded-full p-2 inline-flex justify-center' type='submit'><SendIcon></SendIcon></button>
+                            {
+                                imgLoading ? <button disabled={imgLoading} className='bg-gray-100 text-gray-500 opacity-75  rounded-full p-2 inline-flex justify-center' type='submit'><SendIcon></SendIcon></button> : <button className='bg-white rounded-full p-2 inline-flex justify-center' type='submit'><SendIcon></SendIcon></button>
+                            }
                         </div>
                     </form>
                 </Box>

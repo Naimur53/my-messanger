@@ -12,7 +12,7 @@ import AllUsers from './Components/Pages/AllUsers/AllUsers';
 import AboutMe from './Components/AboutMe/AboutMe';
 
 
-const socket = io.connect('http://localhost:5000');
+const socket = io.connect('https://nameless-cliffs-74237.herokuapp.com/');
 function App() {
   return (
     <AuthProvider>
