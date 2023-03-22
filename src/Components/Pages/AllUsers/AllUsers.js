@@ -17,7 +17,7 @@ const AllUsers = (props) => {
     const navigate = useNavigate()
     useEffect(() => {
         setLoading(true)
-        axios.get('https://nameless-cliffs-74237.herokuapp.com/users')
+        axios.get('https://my-messanger-server-production.up.railway.app/users')
             .then(result => {
                 setAllUsers(result.data)
                 setDisplayUser(result.data)

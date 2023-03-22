@@ -14,7 +14,7 @@ const useFirebase = () => {
     const googleProvider = new GoogleAuthProvider();
 
     const saveUser = (user, method) => {
-        fetch('https://nameless-cliffs-74237.herokuapp.com/users', {
+        fetch('https://my-messanger-server-production.up.railway.app/users', {
             method: method,
             headers: {
                 'content-type': 'application/json'

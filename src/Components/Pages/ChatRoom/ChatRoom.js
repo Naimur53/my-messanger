@@ -26,7 +26,7 @@ const ChatRoom = ({ socket }) => {
         setIsLoading(true);
         setIncoming([]);
         setClient({});
-        axios.get(`https://nameless-cliffs-74237.herokuapp.com/users/${email}`)
+        axios.get(`https://my-messanger-server-production.up.railway.app/users/${email}`)
             .then(async result => {
                 await setClient(result)
                 setIsLoading(false)
@@ -53,7 +53,7 @@ const ChatRoom = ({ socket }) => {
     useEffect(() => {
         setIsLoading(true);
         if (room) {
-            axios.get(`https://nameless-cliffs-74237.herokuapp.com/chat/${room}`)
+            axios.get(`https://my-messanger-server-production.up.railway.app/chat/${room}`)
                 .then(res => {
                     setIncoming(res.data)
                     setIsLoading(false)
@@ -101,7 +101,7 @@ const ChatRoom = ({ socket }) => {
         data.client = client.data.email;
         data.room = room;
         data.time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        axios.post('https://nameless-cliffs-74237.herokuapp.com/chat', data)
+        axios.post('https://my-messanger-server-production.up.railway.app/chat', data)
         setIncoming([...incoming, data]);
         await socket.emit('message', data);
         reset()

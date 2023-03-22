@@ -12,7 +12,7 @@ import AllUsers from './Components/Pages/AllUsers/AllUsers';
 import AboutMe from './Components/AboutMe/AboutMe';
 
 
-const socket = io.connect('https://nameless-cliffs-74237.herokuapp.com/');
+const socket = io.connect('https://my-messanger-server-production.up.railway.app/');
 function App() {
   return (
     <AuthProvider>
