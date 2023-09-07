@@ -23,11 +23,13 @@ const AllUsers = (props) => {
   const navigate = useNavigate();
   useEffect(() => {
     setLoading(true);
-    axios.get("https://my-messanger-server.vercel.app/users").then((result) => {
-      setAllUsers(result.data);
-      setDisplayUser(result.data);
-      setLoading(false);
-    });
+    axios
+      .get("https://my-messanger-server.adaptable.app/users")
+      .then((result) => {
+        setAllUsers(result.data);
+        setDisplayUser(result.data);
+        setLoading(false);
+      });
   }, [user]);
   useEffect(() => {
     if (!email && !loading) {

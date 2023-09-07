@@ -11,7 +11,7 @@ import "tailwindcss/tailwind.css";
 import AllUsers from "./Components/Pages/AllUsers/AllUsers";
 import AboutMe from "./Components/AboutMe/AboutMe";
 
-const socket = io.connect("https://my-messanger-server.vercel.app/");
+const socket = io.connect("https://my-messanger-server.adaptable.app/");
 function App() {
   return (
     <AuthProvider>

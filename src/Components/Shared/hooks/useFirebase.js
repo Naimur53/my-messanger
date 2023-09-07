@@ -22,7 +22,7 @@ const useFirebase = () => {
   const googleProvider = new GoogleAuthProvider();
 
   const saveUser = (user, method) => {
-    fetch("https://my-messanger-server.vercel.app/users", {
+    fetch("https://my-messanger-server.adaptable.app/users", {
       method: method,
       headers: {
         "content-type": "application/json",

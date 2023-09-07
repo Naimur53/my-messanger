@@ -34,7 +34,7 @@ const ChatRoom = ({ socket }) => {
     setIncoming([]);
     setClient({});
     axios
-      .get(`https://my-messanger-server.vercel.app/users/${email}`)
+      .get(`https://my-messanger-server.adaptable.app/users/${email}`)
       .then(async (result) => {
         await setClient(result);
         setIsLoading(false);
@@ -63,7 +63,7 @@ const ChatRoom = ({ socket }) => {
     setIsLoading(true);
     if (room) {
       axios
-        .get(`https://my-messanger-server.vercel.app/chat/${room}`)
+        .get(`https://my-messanger-server.adaptable.app/chat/${room}`)
         .then((res) => {
           setIncoming(res.data);
           setIsLoading(false);
@@ -116,7 +116,7 @@ const ChatRoom = ({ socket }) => {
       hour: "2-digit",
       minute: "2-digit",
     });
-    axios.post("https://my-messanger-server.vercel.app/chat", data);
+    axios.post("https://my-messanger-server.adaptable.app/chat", data);
     setIncoming([...incoming, data]);
     await socket.emit("message", data);
     reset();
